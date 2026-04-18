@@ -1,0 +1,32 @@
+# Environment variables - NEVER COMMIT
+.env
+.env.*
+!.env.example
+*.save
+*.bak
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+*.egg-info/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.yarn/
+
+# React build
+build/
+dist/
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+
+# Logs
+*.log
