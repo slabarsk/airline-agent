@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from groq import Groq
 from mcp import ClientSession, StdioServerParameters
@@ -12,8 +12,23 @@ import asyncio
 
 load_dotenv()
 
-app = Flask(__name__)
+FRONTEND_BUILD = os.path.join(os.path.dirname(__file__), "../frontend/build")
+
+app = Flask(
+    __name__,
+    static_folder=FRONTEND_BUILD,
+    static_url_path=""
+)
 CORS(app)
+
+
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def serve_react(path):
+    full_path = os.path.join(FRONTEND_BUILD, path)
+    if path and os.path.exists(full_path) and not os.path.isdir(full_path):
+        return send_from_directory(FRONTEND_BUILD, path)
+    return send_from_directory(FRONTEND_BUILD, "index.html")
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 GATEWAY_URL  = os.environ.get("GATEWAY_URL", "http://127.0.0.1:5000/api/v1")

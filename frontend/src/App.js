@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import "./App.css";
 
-const AGENT_URL = "http://127.0.0.1:8000/chat";
-const DATES_URL = "http://127.0.0.1:8000/dates";
+const AGENT_URL = "/chat";
+const DATES_URL = "/dates";
 
 const MONTHS_TR = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran",
                    "Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];

@@ -20,7 +20,7 @@ yarn-error.log*
 .yarn/
 
 # React build
-build/
+
 dist/
 
 # IDE
@@ -30,3 +30,4 @@ dist/
 
 # Logs
 *.log
+*.predeploy-bak

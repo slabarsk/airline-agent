@@ -1,0 +1,7 @@
+flask
+flask-cors
+groq
+mcp
+httpx
+python-dotenv
+gunicorn
