@@ -1,7 +1,5 @@
 # SLA Airlines — AI Agent
 
-**SE 4458 Assignment 2** — Sıla Barışık
-
 An AI-powered chat application that lets users search flights, book tickets, and check in through natural conversation. The agent is built on top of the Flask Airline API from the airline api project.
 
 ## Links
@@ -10,11 +8,10 @@ An AI-powered chat application that lets users search flights, book tickets, and
 - **Agent repo (this one):** https://github.com/slabarsk/airline-agent
 - **Airline API repo:** https://github.com/slabarsk/sla-airline-api
 - **API gateway (public):** https://sila-api-air-gsh6hgdxgwcedub0.francecentral-01.azurewebsites.net
-- **Demo video:** _coming soon_
 
 ## Try it
 
-The whole stack is deployed on Azure. Click the live demo link, pick a route like İstanbul–İzmir, select a date from the calendar, choose a flight card, and book a ticket. The conversation is in Turkish by default but the agent switches to English if you open in English.
+The whole stack is deployed on Azure. Click the live demo link, pick a route like İzmir-Ankara, select a date from the calendar, choose a flight card, and book a ticket. The conversation is in Turkish by default but the agent switches to English if you open in English.
 
 ## Architecture
 
@@ -142,6 +139,16 @@ Two issues were flagged in the airline api and have been resolved for this assig
 **Azure stdout swallowing gunicorn logs.** On first deploy the logs were empty because gunicorn was writing to its own log files inside the container. Adding `--access-logfile - --error-logfile -` to the gunicorn command made the logs visible in the Azure log stream, which turned debugging from guesswork into a five-minute exercise.
 
 **Azure extracting the app to a temp directory.** Oryx (Azure's build engine) unpacks the deployment artifact to `/tmp/<hash>/` rather than the intuitive `/home/site/wwwroot/`. The first version of `startup.sh` had the wrong absolute paths and couldn't find the frontend build. Fixed by resolving paths relative to `$(dirname "${BASH_SOURCE[0]}")` so the script works wherever Azure lands it.
+
+## Known limitations when trying the live demo
+
+A few things are worth knowing before clicking around the live link:
+
+**Cold start.** The app sleeps after a few minutes of inactivity on the Basic tier. The first request after a cold period can take 10–20 seconds to come back. Subsequent requests are fast.
+
+**LLM rate limits.** The agent uses Groq's free tier, which has per-minute token and request caps. Under repeated rapid requests the agent may briefly reply with something like "biraz yoğunum, tekrar dener misin" — this is the LLM provider throttling, not an application error. Waiting 10–20 seconds and retrying resolves it. The agent keeps a small fallback chain of models so it only surfaces as a user-visible error when all of them are throttled at once.
+
+**Database free tier can pause.** The managed PostgreSQL instance is on a free tier that pauses the database after a week with no activity. If the demo link has been untouched for that long, the first request will fail until the database wakes up. Hitting the link once resolves it.
 
 ## Tech stack
 
